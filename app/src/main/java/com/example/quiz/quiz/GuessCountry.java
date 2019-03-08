@@ -2,7 +2,8 @@ package com.example.quiz.quiz;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -12,19 +13,22 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;
+import java.util.List;
 
 public class GuessCountry extends AppCompatActivity {
 
     private String json;
-    private Map<String, String> countryCode;
+    private List<country> countryCode;
+    private Spinner spinner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_guess_country);
 
-        countryCode = new HashMap<>();
+        spinner = findViewById(R.id.spinner);
+
+        countryCode = new ArrayList<>();
 
         try {
 
@@ -41,8 +45,9 @@ public class GuessCountry extends AppCompatActivity {
             while (iterator.hasNext()){
 
                 String key = iterator.next();
-                Object value = jsonObject.get(key);
-//                countryCode.put(key, value.getString);
+                String value = jsonObject.getString(key);
+//                Log.d("countries", "Key : " + key + " Value " + jsonObject.getString(key));
+                countryCode.add(new country(key,value));
 
             }
 
@@ -51,6 +56,9 @@ public class GuessCountry extends AppCompatActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+
+        ArrayAdapter<country> arrayAdapter = new ArrayAdapter<country>(this, android.R.layout.simple_spinner_dropdown_item, countryCode);
+        spinner.setAdapter(arrayAdapter);
 
     }
 }
